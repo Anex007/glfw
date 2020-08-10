@@ -1,6 +1,8 @@
 project "GLFW"
     kind "StaticLib"
     language "C"
+    staticruntime "on"
+    systemversion "latest"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -18,10 +20,30 @@ project "GLFW"
         "src/window.c"
     }
 
+    filter "system:linux"
+        pic "on"
+
+        files
+        {
+            "src/x11_init.c",
+            "src/linux_joystick.c",
+            "src/x11_monitor.c",
+            "src/xkb_unicode.c",
+            "src/posix_time.c",
+            "src/posix_thread.c",
+            "src/x11_window.c",
+            "src/glx_context.c",
+            "src/egl_context.c",
+            "src/osmesa_context.c"
+        }
+
+        defines
+        {
+            "_GLFW_X11"
+        }
+
     filter "system:windows"
-        systemversion "latest"
-        staticruntime "on"
-        
+
         files
         {
             "src/win32_init.c",
@@ -43,8 +65,8 @@ project "GLFW"
 
     filter { "configurations:Debug" }
         defines { "DEBUG" }
-        symbols "On"
+        symbols "on"
 
     filter { "configurations:Release" }
         defines { "NDEBUG" }
-        optimize "On"
+        optimize "on"
